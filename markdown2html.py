@@ -6,19 +6,31 @@ import os
 
 def convert_markdown_to_html(markdown_file, output_file):
     """ The function responiable of transforming from markdown to html code"""
-    with open(markdown_file, 'r') as md_file, open(output_file,
-                                                   'w') as html_file:
+    with open(markdown_file, 'r') as md_file, open(output_file, 'w') as html_file:
+        in_list = False
         for line in md_file:
             line = line.rstrip()
             if line.startswith('#'):
+                if in_list:
+                    html_file.write('</ul>\n')
+                    in_list = False
                 header_level = line.count('#', 0, 6)
                 if header_level > 0 and line[header_level] == ' ':
                     content = line[header_level + 1:]
-                    html_file.
-                    write(f'<h{header_level}>{content}</h{header_level}>\n')
+                    html_file.write(f'<h{header_level}>{content}</h{header_level}>\n')
+            elif line.startswith('- '):
+                if not in_list:
+                    html_file.write('<ul>\n')
+                    in_list = True
+                content = line[2:]
+                html_file.write(f'<li>{content}</li>\n')
             else:
+                if in_list:
+                    html_file.write('</ul>\n')
+                    in_list = False
                 html_file.write(line + '\n')
-
+        if in_list:
+            html_file.write('</ul>\n')
 
 def main():
     """main function that checks for argument length"""
@@ -35,7 +47,6 @@ def main():
         sys.exit(1)
 
     convert_markdown_to_html(markdown_file, output_file)
-
     sys.exit(0)
 
 
