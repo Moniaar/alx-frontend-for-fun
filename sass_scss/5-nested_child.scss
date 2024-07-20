@@ -1,0 +1,7 @@
+body {
+  color: #3D3D3D; // Default text color for all elements inside body
+
+  > .red {
+    color: #FF0000; // Text color for .red elements that are direct children of body
+  }
+}
